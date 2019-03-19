@@ -26,7 +26,7 @@ public class Joueur {
 			throw new ListeBateauVideException("La liste de bateau placée en paramètre est vide");
 		
 		if(nomJoueur == null || nomJoueur.equals("")) {
-			this.nomJoueur = ("Jean-MarcDu" + (int) Math.rint(Math.random()*99));
+			this.nomJoueur = ("JeanMarcDu" + (int) Math.rint(Math.random()*99));
 		} else {
 			this.nomJoueur = nomJoueur;
 		}
@@ -36,17 +36,16 @@ public class Joueur {
 	}
 	
 	/**
-	 *
-	 * @param orientation 
-	 * @param bateau
-	 * @param posX 
-	 * @param posY 
-	 * @throws PositionException 
-	 * @throws CaseOccupeeException 
-	 * @throws OrientationException 
-	 * @throws CaseInexistanteException 
+	 * Permet de placer un bateau d'un joueur à une coordonnée donnée avec une orientation donnée
+	 * @param orientation Orientation du bateau ("Droite","Gauche","Haut","Bas")
+	 * @param bateau Bateau à placer
+	 * @param posX Future position du bateau en X
+	 * @param posY Future position du bateau en Y
+	 * @throws CaseInexistanteException Dans le cas où il n'existe pas de case aux coordonnées entrées
+	 * @throws CaseOccupeeException Dans le cas où il exisite déjà un bateau dans la zone d'insertion
+	 * @throws OrientationException Dans le cas où l'orientation du bateau est érronée
 	 */
-	public void placerBateau(Bateau bateau, int posX, int posY, String orientation) throws PositionException, CaseOccupeeException, OrientationException, CaseInexistanteException{
+	public void placerBateau(Bateau bateau, int posX, int posY, String orientation) throws CaseInexistanteException, CaseOccupeeException, OrientationException{
 		switch(orientation){
 		case "Droite" :
 			for(int i = posX; i < posX + bateau.getLongueur(); ++i) {
@@ -71,6 +70,7 @@ public class Joueur {
 				this.grille.setBateauCase(bateau, posX, posY);
 			}
 			break;
+			
 		case "Haut" :
 			for(int i = posY; i < posX + bateau.getLongueur(); ++i) {
 				Case tmp = this.grille.getCase(posX, posY);
@@ -82,8 +82,19 @@ public class Joueur {
 				this.grille.setBateauCase(bateau, posX, posY);
 			}
 			break;
+			
 		case "Bas" :
+			for(int i = posY; i < posX - bateau.getLongueur(); --i) {
+				Case tmp = this.grille.getCase(posX, posY);
+				if(this.grille.getCase(posX, posY).getBateau() != null) {
+					throw new CaseOccupeeException("La case (" + tmp.getPosX() + ";" + tmp.getPosY() + ") est occupée");
+				}
+			}
+			for(int i = posY; i < posX - bateau.getLongueur(); --i) {
+				this.grille.setBateauCase(bateau, posX, posY);
+			}
 			break;
+			
 		default :
 			throw new OrientationException(orientation + " n'est pas une orientation valide");
 		}
