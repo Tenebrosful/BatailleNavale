@@ -15,13 +15,22 @@ public class Joueur {
 	private List<Bateau> listeBateau;
 
 	/**
-	 * Constructeur de Joueur.java pour 
-	 * @param nomJoueur 
-	 * @param grille 
-	 * @param listeBateau 
+	 * Constructeur de Joueur.java pour un nom, une grille et une liste de Bateau donnés
+	 * @param nomJoueur Nom du joueur
+	 * @param grille Grille de jeu appartenant au joueur
+	 * @param listeBateau Liste des bateaux de la partie appartenant au joueur
+	 * @throws ListeBateauVideException 
 	 */
-	public Joueur(String nomJoueur, Grille grille, List<Bateau> listeBateau) {
-		this.nomJoueur = nomJoueur;
+	public Joueur(String nomJoueur, Grille grille, List<Bateau> listeBateau) throws ListeBateauVideException {
+		if(listeBateau.isEmpty())
+			throw new ListeBateauVideException("La liste de bateau placée en paramètre est vide");
+		
+		if(nomJoueur == null || nomJoueur.equals("")) {
+			this.nomJoueur = ("Jean-MarcDu" + (int) Math.rint(Math.random()*99));
+		} else {
+			this.nomJoueur = nomJoueur;
+		}
+		
 		this.grille = grille;
 		this.listeBateau = listeBateau;
 	}
@@ -63,6 +72,15 @@ public class Joueur {
 			}
 			break;
 		case "Haut" :
+			for(int i = posY; i < posX + bateau.getLongueur(); ++i) {
+				Case tmp = this.grille.getCase(posX, posY);
+				if(this.grille.getCase(posX, posY).getBateau() != null) {
+					throw new CaseOccupeeException("La case (" + tmp.getPosX() + ";" + tmp.getPosY() + ") est occupée");
+				}
+			}
+			for(int i = posY; i < posX + bateau.getLongueur(); ++i) {
+				this.grille.setBateauCase(bateau, posX, posY);
+			}
 			break;
 		case "Bas" :
 			break;
