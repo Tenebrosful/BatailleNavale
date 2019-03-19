@@ -78,7 +78,7 @@ public class Grille {
 		if(this.positionValide(posX, posY)) {
 			for(int i = 0 ; i < this.grille.size() ; ++i) {
 				Case tmp = this.grille.get(i);
-				if(tmp.getPosX() == posX && tmp.getPosY() == posY) {
+				if(tmp.aPourCoordonnee(posX, posY)) {
 					return tmp;
 				}
 			}
@@ -86,5 +86,27 @@ public class Grille {
 			throw new CaseInexistanteException("La case (" + posX + ";" + posY + ") n'existe pas");
 		}
 		return null;
+	}
+
+	/**
+	 *
+	 * @param bateau
+	 * @param posX
+	 * @param posY
+	 * @throws CaseInexistanteException 
+	 * @throws CaseOccupeeException 
+	 */
+	public void setBateauCase(Bateau bateau, int posX, int posY) throws CaseInexistanteException, CaseOccupeeException {
+		if(this.positionValide(posX, posY)) {
+			Case tmp = this.getCase(posX, posY);
+			if(tmp.getBateau() == null) {
+				tmp.setBateau(bateau);
+				this.grille.set(this.grille.indexOf(tmp), tmp);
+			} else {
+				throw new CaseOccupeeException("La case (" + tmp.getPosX() + ";" + tmp.getPosY() + ") possède déjà un bateau");
+			}
+		} else {
+			throw new CaseInexistanteException("La case (" + posX + ";" + posY + ") n'existe pas");
+		}
 	}
 }

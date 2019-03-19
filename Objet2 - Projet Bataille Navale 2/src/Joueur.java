@@ -41,6 +41,12 @@ public class Joueur {
 		switch(orientation){
 		case "Droite" :
 			for(int i = posX; i < posX + bateau.getLongueur(); ++i) {
+				Case tmp = this.grille.getCase(posX, posY);
+				if(this.grille.getCase(posX, posY).getBateau() != null) {
+					throw new CaseOccupeeException("La case (" + tmp.getPosX() + ";" + tmp.getPosY() + ") est occupée");
+				}
+			}
+			for(int i = posX; i < posX + bateau.getLongueur(); ++i) {
 				this.grille.setBateauCase(bateau, posX, posY);
 			}
 			
